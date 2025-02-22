@@ -21,10 +21,17 @@ app.get("/scrape", async (req, res) => {
     return res.status(400).json({ error: "Missing URL parameter" });
   }
 
-  const browser = await puppeteer.launch({
-    headless: true, // Set to 'false' if testing locally
+  const launchOptions = {
+    headless: "new", // Use "new" mode for latest headless implementation
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
-  });
+  };
+
+  // Specify the Chrome executable path if running on Render
+  if (process.env.RENDER) {
+    launchOptions.executablePath = "/usr/bin/google-chrome-stable";
+  }
+
+  const browser = await puppeteer.launch(launchOptions);
 
   try {
     const page = await browser.newPage();
