@@ -26,9 +26,11 @@ app.get("/scrape", async (req, res) => {
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
   };
 
-  // ✅ Use Puppeteer's bundled Chromium (Fix for Render)
+  // ✅ Use Render-compatible Chromium path
   const puppeteerPkg = require("puppeteer");
-  launchOptions.executablePath = puppeteerPkg.executablePath();
+  launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH || puppeteerPkg.executablePath();
+
+  console.log(`Using Chromium path: ${launchOptions.executablePath}`);
 
   const browser = await puppeteer.launch(launchOptions);
 
