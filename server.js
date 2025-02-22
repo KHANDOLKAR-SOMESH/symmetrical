@@ -22,14 +22,13 @@ app.get("/scrape", async (req, res) => {
   }
 
   const launchOptions = {
-    headless: "new", // Use "new" mode for latest headless implementation
+    headless: "new", // Use latest headless mode
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
   };
 
-  // Specify the Chrome executable path if running on Render
-  if (process.env.RENDER) {
-    launchOptions.executablePath = "/usr/bin/google-chrome-stable";
-  }
+  // ✅ Use Puppeteer's bundled Chromium (Fix for Render)
+  const puppeteerPkg = require("puppeteer");
+  launchOptions.executablePath = puppeteerPkg.executablePath();
 
   const browser = await puppeteer.launch(launchOptions);
 
